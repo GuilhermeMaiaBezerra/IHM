@@ -227,79 +227,94 @@
         </nav>
     </div>
 
-    <?php
-    include_once "../conexao.php";
-    
-    $linha = array();
-    $mensagem = '';
-    $tipoMensagem = '';
-    
-    try {
-        if (isset($_GET['id'])) {
-            $id_aluno = $_GET['id'];
-            
-            $consultar = $conectar->query("SELECT * FROM aluno WHERE ID_aluno = $id_aluno");
-            
-            if($consultar && $consultar->rowCount() > 0) {
-                $linha = $consultar->fetch(PDO::FETCH_ASSOC);
-            } else {
-                $mensagem = 'Aluno não encontrado!';
-                $tipoMensagem = 'error';
-            }
+<?php
+include_once "../conexao.php";
+
+$linha = array();
+$mensagem = '';
+$tipoMensagem = '';
+
+try {
+    if (isset($_GET['id'])) {
+        $id_aluno = $_GET['id'];
+
+        $consultar = $conectar->prepare("SELECT * FROM aluno WHERE ID_aluno = :id");
+        $consultar->bindParam(':id', $id_aluno);
+        $consultar->execute();
+
+        if($consultar && $consultar->rowCount() > 0) {
+            $linha = $consultar->fetch(PDO::FETCH_ASSOC);
+
+            // Converte data do banco para dd/mm/yyyy para exibir no formulário
+            $linha['data_nascimento'] = DateTime::createFromFormat('Y-m-d', $linha['data_nascimento'])->format('d/m/Y');
+
         } else {
-            $mensagem = 'ID do aluno não especificado!';
+            $mensagem = 'Aluno não encontrado!';
             $tipoMensagem = 'error';
         }
-        
-        if(isset($_POST['salvar'])) {
-            $nome = $_POST['nome'];
-            $cpf = $_POST['cpf'];
-            $data_nascimento = $_POST['data_nascimento'];
-            $endereco = $_POST['endereco'];
-            $email = $_POST['email'];
-            $telefone = $_POST['telefone'];
-            
-            $stmt = $conectar->prepare("UPDATE aluno SET 
-                nome = :nome,
-                cpf = :cpf,
-                data_nascimento = :data_nascimento,
-                endereco = :endereco,
-                email = :email,
-                telefone = :telefone
-                WHERE ID_aluno = :id_aluno");
-            
-            $stmt->execute([
-                ':nome' => $nome,
-                ':cpf' => $cpf,
-                ':data_nascimento' => $data_nascimento,
-                ':endereco' => $endereco,
-                ':email' => $email,
-                ':telefone' => $telefone,
-                ':id_aluno' => $id_aluno
-            ]);
-            
-            if($stmt->rowCount() > 0) {
-                $mensagem = 'Dados atualizados com sucesso!';
-                $tipoMensagem = 'success';
-                
-                $consultar = $conectar->query("SELECT * FROM aluno WHERE ID_aluno = $id_aluno");
-                if($consultar && $consultar->rowCount() > 0) {
-                    $linha = $consultar->fetch(PDO::FETCH_ASSOC);
-                }
-            } else {
-                $mensagem = 'Nenhum dado foi alterado.';
-                $tipoMensagem = 'error';
-            }
-        }
-    } catch (PDOException $e) {
-        $mensagem = 'Erro: ' . $e->getMessage();
+    } else {
+        $mensagem = 'ID do aluno não especificado!';
         $tipoMensagem = 'error';
     }
-    ?>
+
+    if(isset($_POST['salvar'])) {
+        $nome = $_POST['nome'];
+        $cpf = $_POST['cpf'];
+        $data_usuario = $_POST['data_nascimento']; // dd/mm/yyyy
+        $endereco = $_POST['endereco'];
+        $email = $_POST['email'];
+        $telefone = $_POST['telefone'];
+
+        // Converte para formato do banco
+        $data_nascimento = DateTime::createFromFormat('d/m/Y', $data_usuario)->format('Y-m-d');
+
+        $stmt = $conectar->prepare("UPDATE aluno SET 
+            nome = :nome,
+            cpf = :cpf,
+            data_nascimento = :data_nascimento,
+            endereco = :endereco,
+            email = :email,
+            telefone = :telefone
+            WHERE ID_aluno = :id_aluno");
+
+        $stmt->execute([
+            ':nome' => $nome,
+            ':cpf' => $cpf,
+            ':data_nascimento' => $data_nascimento,
+            ':endereco' => $endereco,
+            ':email' => $email,
+            ':telefone' => $telefone,
+            ':id_aluno' => $id_aluno
+        ]);
+
+        if($stmt->rowCount() > 0) {
+            $mensagem = 'Dados atualizados com sucesso!';
+            $tipoMensagem = 'success';
+
+            // Atualiza o array $linha para exibir os dados atualizados
+            $consultar = $conectar->prepare("SELECT * FROM aluno WHERE ID_aluno = :id");
+            $consultar->bindParam(':id', $id_aluno);
+            $consultar->execute();
+            $linha = $consultar->fetch(PDO::FETCH_ASSOC);
+
+            // Converte novamente para dd/mm/yyyy
+            $linha['data_nascimento'] = DateTime::createFromFormat('Y-m-d', $linha['data_nascimento'])->format('d/m/Y');
+
+        } else {
+            $mensagem = 'Nenhum dado foi alterado.';
+            $tipoMensagem = 'error';
+        }
+    }
+
+} catch (PDOException $e) {
+    $mensagem = 'Erro: ' . $e->getMessage();
+    $tipoMensagem = 'error';
+}
+?>
+
 
     <div class="FormEditar">
         <div class="quadradoEditar">
-            <!-- Exibe mensagens de alerta -->
             <?php if (!empty($mensagem)): ?>
                 <div class="alert alert-<?php echo $tipoMensagem; ?>">
                     <?php echo $mensagem; ?>
