@@ -10,14 +10,14 @@
     .conteudo {
         display: flex;
         flex-direction: column;
-        align-items: center; /* centraliza horizontalmente */
+        align-items: center;
         margin-top: 30px;
     }
 
     table {
         border-collapse: collapse;
-        width: 80%; /* ajuste o tamanho da tabela */
-        text-align: center; /* centraliza o texto dentro das células */
+        width: 80%;
+        text-align: center;
     }
 
     table th, table td {
@@ -42,6 +42,7 @@
 
             <ul>
                 <li><a href="home.php" class="active">Home</a></li>
+                 <li><a href="cadastro.php">Cadastro</a></li>
             </ul>
         </nav>
     </div>
@@ -66,7 +67,9 @@
             echo "<table border='1' cellpadding='5' cellspacing='0'>";
             echo "<tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>Endereço</th><th>E-mail</th><th>Telefone</th><th>Ações</th></tr>";
 
+            if ($consultar && $consultar->rowCount() > 0) {
             while ($linha = $consultar->fetch(PDO::FETCH_ASSOC)) {
+                $linha['data_nascimento'] = date('d/m/Y', strtotime($linha['data_nascimento']));
                 echo "<tr>
                         <td>{$linha['nome']}</td>
                         <td>{$linha['cpf']}</td>
@@ -80,6 +83,7 @@
                         </td>
                       </tr>";
             }
+        }
 
             echo "</table>";
             echo "<p>" . $consultar->rowCount() . " registros encontrados</p>";
