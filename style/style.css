@@ -1,11 +1,11 @@
-
-
+/* --------------------------------- HR --------------------------------- */
 hr {
   border: none;
   height: 2px;          
   background-color: #046874;
 }
 
+/* --------------------------------- Login Page --------------------------------- */
 .LoginPage {
   background-color: lightblue;
   display: flex;
@@ -15,6 +15,7 @@ hr {
   margin: 0;
 }
 
+/* --------------------------------- Quadrado --------------------------------- */
 .quadrado {
     width: 400px;
     padding: 30px;
@@ -24,7 +25,7 @@ hr {
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-
+/* --------------------------------- Título Login --------------------------------- */
 #TituloLogin {
     text-align: center;
     margin-bottom: 20px;
@@ -32,6 +33,7 @@ hr {
     color: #046874;
 }
 
+/* --------------------------------- Input Group --------------------------------- */
 .input-group {
     display: flex;
     flex-direction: column;
@@ -59,13 +61,7 @@ hr {
     opacity: 0.3;
 }
 
-
-.input-group {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 15px;
-}
-
+/* --------------------------------- Checkbox Group --------------------------------- */
 .checkbox-group {
     flex-direction: row;
     align-items: center;
@@ -85,6 +81,15 @@ hr {
     color: #046874;
 }
 
+/* --------------------------------- Create Link --------------------------------- */
+.create {
+    margin-left: 50%;
+    text-align: right;
+    cursor: pointer;
+    color: #046874;
+}
+
+/* --------------------------------- Button --------------------------------- */
 button {
     width: 101%;
     padding: 10px;
@@ -100,13 +105,12 @@ button:hover {
     background: #034f56;
 }
 
-<!-- HomePage----------------------------
-
+/* HomePage ---------------------------- */
 
 .menu {
     width: 100%;
     min-height: 100px;
-    padding: 0 3%;
+    padding: 0 0%;
     margin: 0 auto;
     display: flex;
     align-items: center;
@@ -118,7 +122,7 @@ button:hover {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 80px;
+    height: 100px;
     border: none !important;
     padding: 0;
     margin: 0;
@@ -135,34 +139,31 @@ button:hover {
     gap: 10px;
 }
 
-
-nav{
+nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
     box-shadow: none !important;
-
 }
 
-nav ul{
+nav ul {
     list-style: none;
 }
 
-nav ul li{
+nav ul li {
     display: inline-block;
 }
 
-nav ul li a{
+nav ul li a {
     padding: 10px 20px;
     text-decoration: none;
     font-size: 19px;
     color: white;
     border-radius: 30px;
     transition: 0.6s;
-    
 }
 
-nav ul li a:hover{
+nav ul li a:hover {
     background-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-5px);
 }
